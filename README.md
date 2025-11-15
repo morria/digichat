@@ -18,6 +18,31 @@ Takes inspiration from fldigi's GUI but keeps the implementation simple and CLI-
 
 ## Installation
 
+### System Dependencies
+
+DigiChat requires PortAudio for audio input/output. Install the development headers for your system:
+
+**Debian/Ubuntu:**
+```bash
+sudo apt-get update
+sudo apt-get install portaudio19-dev python3-dev
+```
+
+**Fedora/RHEL:**
+```bash
+sudo dnf install portaudio-devel python3-devel
+```
+
+**Arch Linux:**
+```bash
+sudo pacman -S portaudio
+```
+
+**macOS:**
+```bash
+brew install portaudio
+```
+
 ### From Source
 
 ```bash
@@ -25,11 +50,14 @@ Takes inspiration from fldigi's GUI but keeps the implementation simple and CLI-
 git clone https://github.com/morria/digichat.git
 cd digichat
 
-# Install in development mode
-pip install -e .
+# Install system dependencies (automatic detection)
+make system-deps
 
-# Or install with optional dependencies
-pip install -e ".[dev,decoders]"
+# Install in development mode
+make install
+
+# Or install Python packages only (if you've already installed system deps)
+pip install -e ".[dev]"
 ```
 
 ### Using pip (when published)

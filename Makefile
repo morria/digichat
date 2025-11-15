@@ -1,12 +1,48 @@
-.PHONY: help install format lint test check pre-commit clean
+.PHONY: help system-deps install format lint test check pre-commit clean
 
 help:  ## Show this help message
 	@echo "DigiChat Development Commands"
 	@echo "=============================="
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
+system-deps:  ## Install required system dependencies (requires sudo)
+	@echo "Installing system dependencies..."
+	@if command -v apt-get >/dev/null 2>&1; then \
+		echo "Detected Debian/Ubuntu system"; \
+		sudo apt-get update && sudo apt-get install -y portaudio19-dev python3-dev; \
+	elif command -v dnf >/dev/null 2>&1; then \
+		echo "Detected Fedora/RHEL system"; \
+		sudo dnf install -y portaudio-devel python3-devel; \
+	elif command -v pacman >/dev/null 2>&1; then \
+		echo "Detected Arch Linux system"; \
+		sudo pacman -S --noconfirm portaudio; \
+	elif command -v brew >/dev/null 2>&1; then \
+		echo "Detected macOS with Homebrew"; \
+		brew install portaudio; \
+	else \
+		echo "Unknown package manager. Please install portaudio development headers manually:"; \
+		echo "  - Debian/Ubuntu: sudo apt-get install portaudio19-dev python3-dev"; \
+		echo "  - Fedora/RHEL: sudo dnf install portaudio-devel python3-devel"; \
+		echo "  - Arch Linux: sudo pacman -S portaudio"; \
+		echo "  - macOS: brew install portaudio"; \
+		exit 1; \
+	fi
+	@echo "✓ System dependencies installed"
+
 install:  ## Install development dependencies
-	pip install --upgrade pip
+	@echo "Checking for required system dependencies..."
+	@if ! pkg-config --exists portaudio-2.0 2>/dev/null; then \
+		echo "Error: PortAudio development headers not found."; \
+		echo "Please run 'make system-deps' first to install system dependencies."; \
+		echo ""; \
+		echo "Or install manually:"; \
+		echo "  Debian/Ubuntu: sudo apt-get install portaudio19-dev python3-dev"; \
+		echo "  Fedora/RHEL: sudo dnf install portaudio-devel python3-devel"; \
+		echo "  Arch Linux: sudo pacman -S portaudio"; \
+		echo "  macOS: brew install portaudio"; \
+		exit 1; \
+	fi
+	@echo "✓ System dependencies found"
 	pip install -e ".[dev]"
 	pip install -r requirements-dev.txt
 	pre-commit install
