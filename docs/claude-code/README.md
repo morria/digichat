@@ -2,7 +2,56 @@
 
 This directory contains comprehensive documentation for implementing DigiChat using Claude Code (AI-assisted development).
 
-## Documentation Overview
+## 🚀 NEW: Updated Architecture (2025-11-15)
+
+**Start here for the latest architectural design:**
+
+### [📘 QUICKSTART_ARCHITECTURE.md](../QUICKSTART_ARCHITECTURE.md) - **START HERE!**
+**The definitive quick-start guide for implementation.**
+
+This document provides:
+- Architecture overview
+- Technology stack summary
+- Implementation checklist
+- Claude Code integration guide
+- Quick links to all detailed docs
+
+### [📚 ARCHITECTURE_PLAN.md](../ARCHITECTURE_PLAN.md)
+**Complete architectural design (~5000 lines).**
+
+Contains:
+- Detailed component architecture
+- State management strategy (Redux-like)
+- Event-driven communication patterns
+- Testing architecture (headless mode + snapshots)
+- Logging and observability
+- 10-week implementation roadmap
+
+### [🔧 LIBRARY_GUIDE.md](../LIBRARY_GUIDE.md)
+**Detailed guide for all libraries (~2000 lines).**
+
+Contains:
+- Textual (TUI framework) with examples
+- Pypubsub (event system)
+- Sounddevice (audio I/O)
+- NumPy/SciPy (DSP)
+- Structlog (logging)
+- Testing tools (pytest + snapshots)
+
+### [📋 DECISIONS_NEEDED.md](../DECISIONS_NEEDED.md)
+**Architectural decisions and recommendations.**
+
+Contains:
+- Critical decisions to make before implementation
+- Options analysis with pros/cons
+- Research-backed recommendations
+- Decision tracking framework
+
+---
+
+## Original Documentation (Still Useful)
+
+### Documentation Overview
 
 ### [PROMPT.md](PROMPT.md) - Start Here!
 **The main implementation prompt for Claude Code.**
