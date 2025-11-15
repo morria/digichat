@@ -22,7 +22,7 @@ Takes inspiration from fldigi's GUI but keeps the implementation simple and CLI-
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/digichat.git
+git clone https://github.com/morria/digichat.git
 cd digichat
 
 # Install in development mode
