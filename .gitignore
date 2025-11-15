@@ -205,3 +205,20 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# DigiChat specific
+# User configuration files
+config.local.yaml
+*.local.yaml
+
+# Audio test files
+*.wav
+*.mp3
+*.flac
+*.ogg
+test_audio/
+recordings/
+
+# Rig control logs
+hamlib*.log
+rig_*.log
