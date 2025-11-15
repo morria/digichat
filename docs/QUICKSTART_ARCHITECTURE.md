@@ -2,9 +2,23 @@
 
 **For:** Claude Code and AI-Assisted Development
 **Date:** 2025-11-15
-**Status:** Ready for Implementation
+**Status:** Simplified Architecture Ready for Implementation
 
-This document provides a quick overview of the DigiChat architecture with links to detailed documentation.
+This document provides a quick overview of the **simplified** DigiChat architecture with links to detailed documentation.
+
+## ⚡ What Changed (Design Review Updates)
+
+Based on design review feedback, we've simplified the architecture while maintaining perfect testability:
+
+- ✅ **Kept Textual** - Essential for headless testing
+- ✅ **Kept Structlog** - Essential for debugging
+- 🔄 **Simplified State Management** - Observable pattern instead of Redux (~100 LOC vs ~400)
+- 🔄 **Simplified Communication** - Direct calls instead of event bus (simpler, traceable)
+- 📉 **Reduced Complexity** - ~1,500 LOC target vs ~4,000 LOC
+
+**Result:** Same testability, 60% less code.
+
+**👉 Start with [SIMPLIFIED_ARCHITECTURE.md](SIMPLIFIED_ARCHITECTURE.md) for implementation.**
 
 ---
 
@@ -12,26 +26,37 @@ This document provides a quick overview of the DigiChat architecture with links 
 
 We've created comprehensive documentation to guide implementation:
 
-1. **[ARCHITECTURE_PLAN.md](ARCHITECTURE_PLAN.md)** (Main Document, ~5000 lines)
-   - Complete architectural design
-   - Component breakdown
-   - Technology stack details
-   - Testing strategy
-   - 10-week implementation roadmap
+1. **[SIMPLIFIED_ARCHITECTURE.md](SIMPLIFIED_ARCHITECTURE.md)** (⭐ **START HERE**)
+   - Revised architecture based on design review
+   - Simplified state management (no Redux)
+   - Direct component communication (no event bus)
+   - Maintains perfect headless testability
+   - ~1,500 LOC target vs ~4,000 LOC
 
-2. **[LIBRARY_GUIDE.md](LIBRARY_GUIDE.md)** (~2000 lines)
+2. **[ARCHITECTURE_PLAN.md](ARCHITECTURE_PLAN.md)** (Reference)
+   - Original full architecture design
+   - Detailed Redux/event bus patterns
+   - Comprehensive but more complex
+   - Use for reference only
+
+3. **[DESIGN_CRITIQUE.md](DESIGN_CRITIQUE.md)** (Context)
+   - Design review findings
+   - Rationale for simplifications
+   - What to keep vs simplify
+
+4. **[LIBRARY_GUIDE.md](LIBRARY_GUIDE.md)** (Reference)
    - Detailed guide for each library
    - Code examples
    - Installation instructions
    - Best practices
 
-3. **[DECISIONS_NEEDED.md](DECISIONS_NEEDED.md)** (~800 lines)
+5. **[DECISIONS_NEEDED.md](DECISIONS_NEEDED.md)** (Tracking)
    - All pending decisions
    - Options analysis
    - Recommendations
    - Decision tracking
 
-4. **This Document** (Quick Reference)
+6. **This Document** (Quick Reference)
    - High-level overview
    - Quick links
    - Implementation checklist
@@ -43,17 +68,17 @@ We've created comprehensive documentation to guide implementation:
 ### Core Design Principles
 
 1. **Layered Architecture** - Clean separation of concerns
-2. **Event-Driven** - Components communicate via pub/sub
-3. **Testability First** - Headless mode + snapshot testing
-4. **Redux-like State** - Predictable, debuggable state management
+2. **Direct Communication** - Simple function calls (no event bus complexity)
+3. **Testability First** - Headless mode + snapshot testing with Textual
+4. **Observable State** - Simple state pattern with observers
 5. **Claude Code Friendly** - JSON logging, headless runner, state inspection
 
 ### Stack Summary
 
 ```
 UI:           Textual (modern TUI with testing support)
-State:        Custom Redux-like store
-Events:       Pypubsub
+State:        Observable State Pattern (simplified)
+Communication: Direct calls + async queues
 Audio:        Sounddevice + NumPy/SciPy
 Logging:      Structlog (JSON output)
 Testing:      Pytest + pytest-textual-snapshot
@@ -67,17 +92,17 @@ Config:       PyYAML + platformdirs
 │                 UI Layer (Textual)              │
 │         Reactive Widgets + Screens              │
 └────────────────────┬────────────────────────────┘
-                     │ Events ↕ State
+                     │ Observers ↕ Direct Calls
 ┌────────────────────┴────────────────────────────┐
 │            Application Core                      │
-│  Redux Store + Event Bus + Middleware           │
+│  Observable AppState + Structured Logging       │
 └────────────────────┬────────────────────────────┘
-                     │ Commands ↕ Data
+                     │ Direct Method Calls
 ┌────────────────────┴────────────────────────────┐
 │              Service Layer                       │
-│  Audio │ Decoder │ Encoder │ Hamlib │ Config   │
+│  Audio │ Decoder │ Config (direct calls)        │
 └────────────────────┬────────────────────────────┘
-                     │ I/O
+                     │ Queues (audio only)
 ┌────────────────────┴────────────────────────────┐
 │         Hardware (Sound Card + Radio)           │
 └─────────────────────────────────────────────────┘
@@ -322,82 +347,87 @@ logger.info("message_decoded",
 
 ## 🎯 Critical Design Decisions
 
-### STRONGLY RECOMMENDED (Backed by Research)
+### APPROVED (Based on Design Review)
 
-These are ready for approval based on extensive research:
+These decisions have been finalized:
 
 1. ✅ **Textual** for UI
-   - Only option with proper testing support
-   - Headless mode built-in
+   - Essential for headless testing support
    - Snapshot testing via pytest plugin
-   - Modern, actively developed
+   - Modern async API fits audio pipeline
+   - Actively developed
 
-2. ✅ **Custom Redux-like Store** for state
-   - Simple (~200 lines)
-   - Full control
+2. ✅ **Observable State Pattern** for state management
+   - Simple (~100 lines vs ~400 for Redux)
+   - Full testability and serializability
+   - Easy to understand and debug
    - No dependency
 
-3. ✅ **Queue-based Threading** for audio
+3. ✅ **Direct Calls + Queues** for communication
+   - Direct method calls (simple, traceable)
+   - Queues only for audio threading (safe)
+   - No event bus complexity
+
+4. ✅ **Queue-based Threading** for audio
    - Safest for audio (prevents dropouts)
    - Recommended by sounddevice docs
-   - Testable
-
-4. ✅ **Pypubsub** for events
-   - Mature, stable
-   - Thread-safe
-   - Simple API
+   - Testable with mocks
 
 5. ✅ **Structlog** for logging
    - JSON output for headless mode
    - Context binding
-   - Perfect for debugging
+   - Essential for Claude Code debugging
 
-**See [DECISIONS_NEEDED.md](DECISIONS_NEEDED.md) for full analysis and alternatives.**
+**See [SIMPLIFIED_ARCHITECTURE.md](SIMPLIFIED_ARCHITECTURE.md) for complete details.**
 
 ---
 
-## 📁 Project Structure
+## 📁 Project Structure (Simplified)
 
 ```
 src/digichat/
-├── core/              # State + Events + Middleware
-│   ├── store.py       # Redux-like store
-│   ├── actions.py     # Action creators
-│   ├── reducers.py    # Pure state reducers
-│   ├── events.py      # Event bus (pypubsub)
-│   └── middleware.py  # Logging, async effects
+├── core/
+│   ├── __init__.py
+│   └── state.py           # Observable state (~100 LOC)
 │
-├── services/          # Side effects (I/O)
-│   ├── audio_service.py
-│   ├── decoder_service.py
-│   ├── encoder_service.py
-│   ├── hamlib_service.py
-│   └── config_service.py
+├── services/              # Business logic
+│   ├── __init__.py
+│   ├── audio_service.py   # Audio I/O with queues
+│   ├── decoder_service.py # Digital mode decoding
+│   └── config_service.py  # Configuration management
 │
-├── modes/             # Digital mode implementations
-│   ├── base.py        # Base interface
-│   ├── cw.py          # CW decoder/encoder
-│   ├── psk31.py       # PSK31 decoder/encoder
-│   └── rtty.py        # RTTY decoder/encoder
+├── modes/                 # Digital mode implementations
+│   ├── __init__.py
+│   ├── base.py           # Base interface
+│   ├── cw.py             # CW decoder/encoder
+│   ├── psk31.py          # PSK31 (v1.1+)
+│   └── rtty.py           # RTTY (v1.1+)
 │
-├── ui/                # Textual UI
-│   ├── app.py         # Main app
-│   ├── screens/       # Screen definitions
-│   └── widgets/       # Custom widgets
+├── ui/                    # Textual UI
+│   ├── __init__.py
+│   ├── app.py            # Main app
+│   ├── widgets/          # Custom widgets
+│   └── themes.py
 │
-├── audio/             # Low-level audio/DSP
-│   ├── buffer.py      # Circular buffer
-│   ├── pipeline.py    # Processing pipeline
-│   └── utils.py       # DSP utilities
+├── audio/                 # Low-level audio/DSP
+│   ├── __init__.py
+│   ├── buffer.py         # Circular buffer
+│   └── pipeline.py       # Processing pipeline
 │
 ├── utils/
-│   ├── logger.py      # Structlog setup
+│   ├── __init__.py
+│   ├── logger.py         # Structlog setup
 │   └── helpers.py
 │
-├── config.py          # Configuration
-├── cli.py             # CLI entry point
-└── headless.py        # Headless runner
+├── config.py              # Configuration dataclasses
+├── cli.py                 # CLI entry point
+└── headless.py            # Headless test runner
 ```
+
+**Key Changes:**
+- ❌ Removed: actions.py, reducers.py, middleware.py, events.py
+- ✅ Simplified: Single state.py file with observable pattern
+- ✅ Cleaner: Fewer files, simpler mental model
 
 ---
 

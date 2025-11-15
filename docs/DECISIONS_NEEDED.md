@@ -1,10 +1,12 @@
 # DigiChat: Decisions Needed
 
-**Document Version:** 1.0
+**Document Version:** 2.0
 **Date:** 2025-11-15
 **Purpose:** Track architectural and implementation decisions
 
-This document lists all decisions that need to be made before or during implementation. Each decision includes context, options, recommendations, and space for the final decision.
+**Status:** Architecture simplified based on design review. Key decisions finalized.
+
+This document lists all decisions that need to be made before or during implementation. Each decision includes context, options, recommendations, and final decision status.
 
 ---
 
@@ -23,7 +25,7 @@ These decisions must be made before starting implementation.
 
 ### D1: UI Framework Choice
 
-**Status:** ⏳ PENDING
+**Status:** ✅ DECIDED - Textual
 
 **Context:**
 - Need TUI framework that's testable and supports headless mode
@@ -56,15 +58,15 @@ These decisions must be made before starting implementation.
 - Could have undiscovered bugs (mitigated by good test coverage)
 
 **Decision:**
-- [ ] **Approved:** Textual
-- [ ] **Alternative:** _____________
-- [ ] **Notes:** _________________
+- [x] **Approved:** Textual
+- **Date:** 2025-11-15
+- **Rationale:** Essential for headless testing support. Provides snapshot testing and async-first API that fits the architecture.
 
 ---
 
 ### D2: State Management Pattern
 
-**Status:** ⏳ PENDING
+**Status:** ✅ DECIDED - Observable State Pattern (Simplified)
 
 **Context:**
 - Need predictable state management
@@ -102,15 +104,15 @@ Total: ~200-300 lines
 ```
 
 **Decision:**
-- [ ] **Approved:** Custom Redux-like
-- [ ] **Alternative:** _____________
-- [ ] **Notes:** _________________
+- [x] **Approved:** Observable State Pattern (simpler than Redux)
+- **Date:** 2025-11-15
+- **Rationale:** Provides same testability and serializability as Redux with 60% less code (~100 LOC vs ~400 LOC). Simpler to understand and debug. See SIMPLIFIED_ARCHITECTURE.md for implementation.
 
 ---
 
 ### D3: Audio Threading Architecture
 
-**Status:** ⏳ PENDING
+**Status:** ✅ DECIDED - Queue-based threading
 
 **Context:**
 - Audio callback must be fast (avoid dropouts)
@@ -157,15 +159,15 @@ put(queue) ◄─────┘          |                      |
 - Follows sounddevice best practices
 
 **Decision:**
-- [ ] **Approved:** Queue-based threading
-- [ ] **Alternative:** _____________
-- [ ] **Notes:** _________________
+- [x] **Approved:** Queue-based threading
+- **Date:** 2025-11-15
+- **Rationale:** Safest for audio (prevents dropouts), follows sounddevice best practices, and is testable with mocks.
 
 ---
 
 ### D4: Configuration File Location
 
-**Status:** ⏳ PENDING
+**Status:** ✅ DECIDED - platformdirs
 
 **Context:**
 - Need to store user preferences
@@ -196,9 +198,38 @@ config_dir = Path(user_config_dir("digichat", "digichat"))
 ```
 
 **Decision:**
-- [ ] **Approved:** platformdirs
-- [ ] **Approved:** Simple ~/.digichat
-- [ ] **Notes:** _________________
+- [x] **Approved:** platformdirs
+- **Date:** 2025-11-15
+- **Rationale:** Most "correct" approach, handles all platforms properly, follows modern OS conventions.
+
+---
+
+### D4A: Component Communication Pattern
+
+**Status:** ✅ DECIDED - Direct Calls (No Event Bus)
+
+**Context:**
+- Need components to communicate (UI ↔ Services ↔ State)
+- Original plan used pypubsub event bus for all communication
+- Design review questioned if event bus adds unnecessary complexity
+
+**Options:**
+
+| Option | Pros | Cons |
+|--------|------|------|
+| **Direct Calls** | ✅ Simple and traceable<br>✅ Clear call stacks<br>✅ Easy to test | ⚠️ Slightly more coupling |
+| **Event Bus (pypubsub)** | ✅ Loose coupling | ⚠️ Hard to trace<br>⚠️ Complex setup<br>⚠️ Extra dependency |
+| **Hybrid** | ✅ Direct calls + queues for audio | ✅ Best of both |
+
+**Recommendation:** **Direct Calls + Queues**
+- Use direct method calls for most communication (simple, traceable)
+- Use queues only for audio threading (required for thread safety)
+- No event bus needed - YAGNI principle applies
+
+**Decision:**
+- [x] **Approved:** Direct calls + queues (no event bus)
+- **Date:** 2025-11-15
+- **Rationale:** Simpler, more traceable, easier to debug. Queues only where actually needed (audio threading). Event bus is over-engineering for this use case.
 
 ---
 
@@ -439,36 +470,39 @@ These determine what goes in v1.0 vs. future versions.
 
 ---
 
-## Summary of Recommendations
+## Summary of Decisions
 
-### STRONGLY RECOMMENDED (Start Implementation)
+### ✅ FINALIZED (Implementation Ready)
 
-These are research-backed recommendations ready for approval:
+These decisions have been made and are ready for implementation:
 
-1. ✅ **UI Framework:** Textual
-   - Best testing support
-   - Headless mode built-in
-   - Active development
+1. ✅ **UI Framework:** Textual (D1)
+   - Essential for headless testing
+   - Snapshot testing support
+   - Async-first API
 
-2. ✅ **State Management:** Custom Redux-like
-   - Simple implementation (~200 lines)
-   - Full control
-   - No dependency
+2. ✅ **State Management:** Observable State Pattern (D2)
+   - Simpler than Redux (~100 LOC vs ~400)
+   - Full testability maintained
+   - Easy to understand and debug
 
-3. ✅ **Audio Threading:** Queue-based
-   - Safest approach
+3. ✅ **Component Communication:** Direct Calls + Queues (D4A)
+   - Direct method calls (simple, traceable)
+   - Queues only for audio threading
+   - No event bus complexity
+
+4. ✅ **Audio Threading:** Queue-based (D3)
+   - Safest for audio
    - Follows best practices
-   - Testable
+   - Testable with mocks
 
-4. ✅ **Event System:** Pypubsub
-   - Mature and stable
-   - Thread-safe
-   - Good docs
+5. ✅ **Configuration Storage:** platformdirs (D4)
+   - Cross-platform support
+   - Follows OS conventions
 
-5. ✅ **Logging:** Structlog
+6. ✅ **Logging:** Structlog (kept from original)
    - JSON output for headless mode
-   - Context binding
-   - Great for debugging
+   - Essential for Claude Code debugging
 
 ### RECOMMENDED (Decide During Implementation)
 
