@@ -56,9 +56,9 @@ decoders = [
 digichat = "digichat.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/digichat"
-Repository = "https://github.com/yourusername/digichat"
-Documentation = "https://github.com/yourusername/digichat/tree/main/docs"
+Homepage = "https://github.com/morria/digichat"
+Repository = "https://github.com/morria/digichat"
+Documentation = "https://github.com/morria/digichat/tree/main/docs"
 
 [tool.setuptools.packages.find]
 where = ["src"]

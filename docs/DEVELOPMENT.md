@@ -13,7 +13,7 @@
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/digichat.git
+git clone https://github.com/morria/digichat.git
 cd digichat
 ```
 
@@ -317,8 +317,8 @@ See [docs/architecture/](architecture/) for detailed architecture documentation:
 
 ## Getting Help
 
-- **Issues**: https://github.com/yourusername/digichat/issues
-- **Discussions**: https://github.com/yourusername/digichat/discussions
+- **Issues**: https://github.com/morria/digichat/issues
+- **Discussions**: https://github.com/morria/digichat/discussions
 - **Email**: your.email@example.com
 
 ## License
