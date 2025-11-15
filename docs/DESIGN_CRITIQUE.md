@@ -40,21 +40,17 @@ class AppState:
 
 ---
 
-### 2. Textual vs. Curses: Premature Optimization
+### 2. Textual: Good Choice for Headless Testing
 
-**Problem:** Textual is chosen primarily for "testing support" before you have anything to test.
+**Assessment:** ✅ **Textual is the right choice** for this project.
 
-**Questions:**
-- Have you built a TUI app before? Curses works fine and is simpler.
-- Will you actually write UI snapshot tests? (History suggests: probably not until much later)
-- Is headless mode worth the dependency and learning curve *right now*?
+**Why it's good:**
+- Headless testing support is essential for Claude Code development
+- Snapshot testing will catch UI regressions
+- Modern async API fits the audio pipeline
+- Active development and good documentation
 
-**Simpler Alternative:**
-- Start with `curses`. It's in stdlib, well-documented, and simpler.
-- Test your DSP functions (the hard part) with audio files.
-- Add Textual later *if* UI testing becomes a bottleneck (it won't be).
-
-**Reality:** The hard parts are DSP algorithms (CW/PSK31/RTTY), not UI rendering. You're optimizing the wrong thing.
+**Keep Textual.** This is a good architectural decision that enables the testability requirements.
 
 ---
 
@@ -272,12 +268,11 @@ None of these require elaborate test infrastructure. You need:
 - ✅ Dataclass-based configuration
 - ✅ Focus on testable DSP algorithms
 
+**Simplify Now:**
+- 🔄 Redux state management → Simple observable state pattern
+- 🔄 Event bus → Direct calls + async queues where needed
+
 **Defer for Later:**
-- ⏸ Redux state management (use simple observer pattern)
-- ⏸ Event bus (use direct calls)
-- ⏸ Textual (use curses)
-- ⏸ Headless testing (test DSP directly)
-- ⏸ Structlog (use logging stdlib initially)
 - ⏸ PSK31/RTTY (add after CW works)
 - ⏸ Hamlib (add after core works)
 
@@ -285,10 +280,15 @@ None of these require elaborate test infrastructure. You need:
 
 ## Conclusion
 
-You have built an **enterprise-grade architecture for a hobbyist TUI application**. The irony is that amateur radio operators prefer simple, working tools over architecturally pure systems.
+The architecture has **good foundational choices** (Textual, queue-based audio, structured logging) but adds **unnecessary complexity** in state management and component communication.
 
-**Core Principle:** Build the simplest thing that could possibly work, then evolve based on real constraints.
+**Recommendation:** See **SIMPLIFIED_ARCHITECTURE.md** for a revised design that:
+- ✅ Keeps Textual (essential for headless testing)
+- ✅ Keeps structured logging (essential for debugging)
+- ✅ Keeps queue-based audio threading (safe and proven)
+- 🔄 Simplifies state management (observable pattern vs Redux)
+- 🔄 Simplifies component communication (direct calls vs event bus)
 
-**Next Step:** Delete 80% of this documentation and write 1,000 lines of code. You'll learn more in a weekend of coding than in weeks of architectural planning.
+**Result:** Same testability, 60% less complexity (~1,500 LOC vs ~4,000 LOC).
 
-The best architecture emerges from working code, not from planning documents.
+**Next Step:** Implement the simplified architecture in SIMPLIFIED_ARCHITECTURE.md. Start with Phase 1 (foundation) and iterate based on real constraints.
