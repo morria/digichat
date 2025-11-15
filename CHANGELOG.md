@@ -41,5 +41,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuration popup interface
 - Message logging
 
-[Unreleased]: https://github.com/yourusername/digichat/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/yourusername/digichat/releases/tag/v0.1.0
+[Unreleased]: https://github.com/morria/digichat/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/morria/digichat/releases/tag/v0.1.0

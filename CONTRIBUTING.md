@@ -11,7 +11,7 @@ Be respectful, inclusive, and professional in all interactions. We welcome contr
 ### Reporting Bugs
 
 If you find a bug:
-1. Check if it's already reported in [Issues](https://github.com/yourusername/digichat/issues)
+1. Check if it's already reported in [Issues](https://github.com/morria/digichat/issues)
 2. If not, create a new issue with:
    - Clear description of the problem
    - Steps to reproduce
@@ -35,7 +35,7 @@ Feature requests are welcome! Please:
 
 ```bash
 # Fork and clone the repository
-git clone https://github.com/yourusername/digichat.git
+git clone https://github.com/morria/digichat.git
 cd digichat
 
 # Create virtual environment
@@ -120,7 +120,7 @@ We'll review your PR and may request changes. Please be patient and responsive t
 
 ## Development Priorities
 
-Current priorities (see [Issues](https://github.com/yourusername/digichat/issues)):
+Current priorities (see [Issues](https://github.com/morria/digichat/issues)):
 1. Core audio I/O implementation
 2. CW decoder
 3. Basic curses UI
@@ -140,7 +140,7 @@ We especially welcome contributions in:
 
 ## Questions?
 
-- Open a [Discussion](https://github.com/yourusername/digichat/discussions)
+- Open a [Discussion](https://github.com/morria/digichat/discussions)
 - Comment on relevant issues
 - Email: your.email@example.com
 
