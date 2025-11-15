@@ -2,9 +2,7 @@
 Tests for configuration management.
 """
 
-import pytest
-from pathlib import Path
-from digichat.config import Config, AudioConfig, HamlibConfig, ModeConfig, UIConfig
+from digichat.config import AudioConfig, Config, HamlibConfig, ModeConfig, UIConfig
 
 
 def test_audio_config_defaults():

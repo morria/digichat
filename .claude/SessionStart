@@ -1,0 +1,48 @@
+#!/bin/bash
+# SessionStart hook for Claude Code
+# This hook runs at the start of each Claude Code session to ensure
+# the development environment is properly configured
+
+set -e
+
+echo "🔧 Setting up DigiChat development environment..."
+
+# Check if we're in a virtual environment
+if [ -z "$VIRTUAL_ENV" ]; then
+    echo "⚠️  Warning: Not running in a virtual environment"
+    echo "   Consider creating one with: python -m venv venv && source venv/bin/activate"
+fi
+
+# Install/upgrade development dependencies
+echo "📦 Installing development dependencies..."
+pip install -q -e ".[dev]" 2>/dev/null || echo "⚠️  Could not install package in editable mode (may need system dependencies)"
+pip install -q -r requirements-dev.txt 2>/dev/null || echo "⚠️  Some dependencies could not be installed"
+
+# Ensure critical dev tools are available
+pip install -q pytest pytest-cov black ruff isort mypy types-setuptools pre-commit 2>/dev/null || true
+
+# Install pre-commit hooks if not already installed
+if [ ! -f .git/hooks/pre-commit ] || ! grep -q "pre-commit" .git/hooks/pre-commit 2>/dev/null; then
+    echo "🪝 Installing pre-commit hooks..."
+    pre-commit install
+else
+    echo "✓ Pre-commit hooks already installed"
+fi
+
+# Update pre-commit hooks to latest versions
+echo "🔄 Updating pre-commit hooks..."
+pre-commit autoupdate --quiet || echo "⚠️  Could not auto-update pre-commit hooks"
+
+echo ""
+echo "✨ Development environment ready!"
+echo ""
+echo "📋 Available commands:"
+echo "   make lint        - Run all linters (isort, black, ruff, mypy)"
+echo "   make format      - Auto-format code (isort, black)"
+echo "   make test        - Run tests with coverage"
+echo "   make check       - Run all checks (lint + test)"
+echo "   make pre-commit  - Run pre-commit on all files"
+echo ""
+echo "🔍 Pre-commit hooks are active and will run automatically before each commit."
+echo "   The hooks will run: isort, black, ruff, mypy, and pytest"
+echo ""
